@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OINP Eligibility Checker</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: auto; }
+        label, select, input, button { display: block; width: 100%; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h2>OINP Eligibility Checker</h2>
+    <form id="oinpForm">
+        <label>Highest Education Level:</label>
+        <select id="education">
+            <option value="">-- Select --</option>
+            <option value="phd">PhD from Ontario</option>
+            <option value="masters">Master's from Ontario</option>
+            <option value="bachelor">Bachelor's or higher</option>
+            <option value="diploma">Diploma from Canadian institution</option>
+            <option value="highschool">High School</option>
+        </select>
+
+        <label>Do you have a full-time job offer?</label>
+        <select id="jobOffer">
+            <option value="">-- Select --</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+        </select>
+
+        <label>Enter NOC level (0, A, B, C, D):</label>
+        <input type="text" id="noc" />
+
+        <label>Select Work Experience:</label>
+        <select id="experience">
+            <option value="">-- Select --</option>
+            <option value="none">None</option>
+            <option value="6months">6-12 months</option>
+            <option value="1year">1+ year</option>
+            <option value="2years">2+ years</option>
+        </select>
+
+        <label>Language score (CLB level):</label>
+        <input type="number" id="language" min="1" max="10" />
+
+        <button type="button" onclick="checkEligibility()">Check Eligibility</button>
+    </form>
+    <p id="result" style="font-weight: bold; margin-top: 20px;"></p>
+
+    <script>
+        function checkEligibility() {
+            const education = document.getElementById('education').value;
+            const jobOffer = document.getElementById('jobOffer').value;
+            const noc = document.getElementById('noc').value.toUpperCase();
+            const experience = document.getElementById('experience').value;
+            const language = parseInt(document.getElementById('language').value);
+
+            let result = "";
+
+            if (education === 'phd') {
+                result = "You may be eligible for the PhD Graduate Stream.";
+            } else if (education === 'masters' && language >= 7) {
+                result = "You may be eligible for the Masters Graduate Stream.";
+            } else if (jobOffer === 'yes' && experience === '2years' && ['0','A','B'].includes(noc)) {
+                result = "You may be eligible for the Employer Job Offer: Foreign Worker Stream.";
+            } else if (jobOffer === 'yes' && education === 'diploma') {
+                result = "You may be eligible for the Employer Job Offer: International Student Stream.";
+            } else if (jobOffer === 'yes' && ['C','D'].includes(noc) && experience !== 'none' && language >= 4) {
+                result = "You may be eligible for the Employer Job Offer: In-Demand Skills Stream.";
+            } else if (experience === '1year' && language >= 7 && ['0','A','B'].includes(noc)) {
+                result = "You may be eligible for the Express Entry Human Capital Priorities Stream.";
+            } else if (experience === '1year' && language >= 5 && noc === 'B') {
+                result = "You may be eligible for the Express Entry Skilled Trades Stream.";
+            } else {
+                result = "You may not meet the basic eligibility for common OINP streams. Please review specific stream criteria.";
+            }
+
+            document.getElementById('result').innerText = result;
+        }
+    </script>
+</body>
+</html>
